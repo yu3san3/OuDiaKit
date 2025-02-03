@@ -1,7 +1,12 @@
 import Foundation
 
 extension JSONDecoder.KeyDecodingStrategy {
-    static let convertFromUpperCamelCase: JSONDecoder.KeyDecodingStrategy = .custom { codingKeys in
+    /// UpperCamelCase のキーを lowerCamelCase に変換するカスタムデコード戦略。
+    ///
+    /// - 例:
+    ///   - `FileType` → `fileType`
+    ///   - `Rosen` → `rosen`
+    public static let convertFromUpperCamelCase: JSONDecoder.KeyDecodingStrategy = .custom { codingKeys in
         let lastKey = codingKeys.last!
         let keyString = lastKey.stringValue
         let transformedKey = keyString.prefix(1).lowercased() + keyString.dropFirst()

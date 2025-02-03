@@ -2,7 +2,6 @@ import Foundation
 
 /// OuDia形式のテキストをJSONに変換するクラス
 final public class OuDiaJSONConverter {
-
     private let repeatableKeysRegistry = RepeatableKeysRegistry()
 
     /// 現在登録されている繰り返し可能なキーのセットを取得する。
@@ -18,11 +17,11 @@ final public class OuDiaJSONConverter {
     ///
     /// - Parameter text: OuDia形式のテキスト
     /// - Returns: 変換されたJSON data（変換に失敗した場合はnil）
-    public func convertToJSON(_ text: String) -> Data? {
+    public func convertToJSON(_ text: String) throws -> Data {
         let lines = text.components(separatedBy: .newlines)
         var index = 0
         let root = parseBlock(lines: lines, index: &index)
-        return try? JSONSerialization.data(withJSONObject: root, options: .prettyPrinted)
+        return try JSONSerialization.data(withJSONObject: root, options: .prettyPrinted)
     }
 
     /// 繰り返し可能なキーを追加する。

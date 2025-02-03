@@ -7,7 +7,7 @@ import Foundation
         let result = OuDiaJSONConverter().convertToJSON(mockOudText)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromUpperCamelCase
-        let object = try decoder.decode(DiagramDataJSON.self, from: result!)
+        let object = try decoder.decode(DiagramData.self, from: result!)
         #expect(object != nil)
     } catch {
         Issue.record(error)

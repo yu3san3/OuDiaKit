@@ -97,3 +97,18 @@ extension Color {
         )
     }
 }
+
+// MARK: - Decodable
+
+extension Color: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let colorCode = try container.decode(String.self)
+        self.init(oudColorCode: colorCode)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(oudColorCode())
+    }
+}

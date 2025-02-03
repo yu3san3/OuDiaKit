@@ -3,12 +3,13 @@ import Foundation
 @testable import OuDiaKit
 
 @Test func parse() {
-    let result = OudJSONConverter().toJSONString(mockOudText)
-
-    let data = result?.data(using: .utf8)
-    let object = try? JSONDecoder().decode(OudDataJSON.self, from: data!)
-
-    #expect(object != nil)
+    do {
+        let result = OuDiaJSONConverter().convertToJSON(mockOudText)
+        let object = try JSONDecoder().decode(DiagramDataJSON.self, from: result!)
+        #expect(object != nil)
+    } catch {
+        Issue.record(error)
+    }
 }
 
 let mockOudText = """

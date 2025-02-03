@@ -1,4 +1,4 @@
-struct OudDataJSON: Equatable, Codable {
+struct DiagramDataJSON: Equatable, Codable {
     var fileType: String
     var rosen: RosenJSON
     var dispProp: DispPropJSON

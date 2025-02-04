@@ -5,7 +5,9 @@ import Foundation
 @Test func parse() {
     do {
         let result = OuDiaJSONConverter().convertToJSON(mockOudText)
-        let object = try JSONDecoder().decode(DiagramDataJSON.self, from: result!)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromUpperCamelCase
+        let object = try decoder.decode(DiagramDataJSON.self, from: result!)
         #expect(object != nil)
     } catch {
         Issue.record(error)

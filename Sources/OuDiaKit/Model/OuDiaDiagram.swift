@@ -1,6 +1,6 @@
 import SwiftUICore
 
-public struct DiagramData: Equatable, Codable {
+public struct OuDiaDiagram: Equatable, Codable {
     public var fileType: String
     public var rosen: Rosen
     public var dispProp: DispProp
@@ -309,7 +309,7 @@ public struct Ressya: Identifiable, Equatable, Codable { // インデント数: 
     }
 }
 
-public struct Jikoku: Identifiable, Equatable, Codable { // インデント数: 5
+public struct Jikoku: Identifiable, Equatable, Codable, Sendable { // インデント数: 5
     enum CodingKeys: CodingKey {
         case arrivalStatus,
              chaku,

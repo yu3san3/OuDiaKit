@@ -1,5 +1,5 @@
 import Testing
-import SwiftUI
+import SwiftUICore
 @testable import OuDiaKit
 
 struct OudColorCodeTests {
@@ -7,7 +7,7 @@ struct OudColorCodeTests {
     typealias RGBColorSet = (color: Color, rgba: RGBAValue)
     typealias OudColorSet = (color: Color, oudColorCode: String)
 
-    enum TestData {
+    enum ColorCodeTestData {
         static let red = Color(red: 1, green: 0, blue: 0)
         static let green = Color(red: 0, green: 1, blue: 0)
         static let blue = Color(red: 0, green: 0, blue: 1)
@@ -31,7 +31,7 @@ struct OudColorCodeTests {
 
     @Test(
         "oudColorCodeによって正しく初期化される。",
-        arguments: TestData.oudColorSets
+        arguments: ColorCodeTestData.oudColorSets
     )
     func initializeColorWithOudColorCode(with colorSet: OudColorSet) {
         let oudColorCode = colorSet.oudColorCode
@@ -42,7 +42,7 @@ struct OudColorCodeTests {
 
     @Test(
         "oudColorCodeメソッドによって正しく16進色コードに変換される。",
-        arguments: TestData.oudColorSets
+        arguments: ColorCodeTestData.oudColorSets
     )
     func oudColorCodeMethod(with colorSet: OudColorSet) {
         let color = colorSet.color
@@ -53,7 +53,7 @@ struct OudColorCodeTests {
 
     @Test(
         "ColorのRGB値を正しく取得できる。",
-        arguments: TestData.rgbColorSets
+        arguments: ColorCodeTestData.rgbColorSets
     )
     func canGetRGBValues(with colorSet: RGBColorSet) {
         let color = colorSet.color

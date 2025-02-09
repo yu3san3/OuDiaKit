@@ -1,6 +1,6 @@
 import SwiftUICore
 
-public struct OuDiaDiagram: Equatable, Codable {
+public struct OuDiaDiagram: Equatable, Codable, Sendable {
     public var fileType: String
     public var rosen: Rosen
     public var dispProp: DispProp
@@ -19,7 +19,7 @@ public struct OuDiaDiagram: Equatable, Codable {
     }
 }
 
-public struct Rosen: Equatable, Codable { // インデント数: 1
+public struct Rosen: Equatable, Codable, Sendable { // インデント数: 1
     public var rosenmei: String
     public var eki: [Eki]
     public var ressyasyubetsu: [Ressyasyubetsu]
@@ -59,7 +59,7 @@ public struct Rosen: Equatable, Codable { // インデント数: 1
     }
 }
 
-public struct DispProp: Equatable, Codable { // インデント数: 1
+public struct DispProp: Equatable, Codable, Sendable { // インデント数: 1
     public var jikokuhyouFont: [String]
     public var jikokuhyouVFont: String
     public var diaEkimeiFont: String
@@ -102,7 +102,7 @@ public struct DispProp: Equatable, Codable { // インデント数: 1
     }
 }
 
-public struct Eki: Identifiable, Equatable, Codable { // インデント数: 2
+public struct Eki: Identifiable, Equatable, Codable, Sendable { // インデント数: 2
     enum CodingKeys: CodingKey {
         case ekimei,
              ekijikokukeisiki,
@@ -152,7 +152,7 @@ public struct Eki: Identifiable, Equatable, Codable { // インデント数: 2
     }
 }
 
-public struct Ressyasyubetsu: Equatable, Codable { // インデント数: 2
+public struct Ressyasyubetsu: Equatable, Codable, Sendable { // インデント数: 2
     public var syubetsumei: String
     public var ryakusyou: String?
     public var jikokuhyouMojiColor: Color
@@ -197,7 +197,7 @@ public struct Ressyasyubetsu: Equatable, Codable { // インデント数: 2
     }
 }
 
-public struct Dia: Identifiable, Equatable, Codable { // インデント数: 2
+public struct Dia: Identifiable, Equatable, Codable, Sendable { // インデント数: 2
     enum CodingKeys: CodingKey {
         case diaName,
              kudari,
@@ -230,7 +230,7 @@ public struct Dia: Identifiable, Equatable, Codable { // インデント数: 2
     }
 }
 
-public struct Kudari: Equatable, Codable { // インデント数: 3
+public struct Kudari: Equatable, Codable, Sendable { // インデント数: 3
     public var ressya: [Ressya]
 
     public init(ressya: [Ressya]) {
@@ -243,7 +243,7 @@ public struct Kudari: Equatable, Codable { // インデント数: 3
     }
 }
 
-public struct Nobori: Equatable, Codable { // インデント数: 3
+public struct Nobori: Equatable, Codable, Sendable { // インデント数: 3
     public var ressya: [Ressya]
 
     public init(ressya: [Ressya]) {
@@ -256,7 +256,7 @@ public struct Nobori: Equatable, Codable { // インデント数: 3
     }
 }
 
-public struct Ressya: Identifiable, Equatable, Codable { // インデント数: 4
+public struct Ressya: Identifiable, Equatable, Codable, Sendable { // インデント数: 4
     enum CodingKeys: CodingKey {
         case houkou,
              syubetsu,
@@ -318,14 +318,14 @@ public struct Jikoku: Identifiable, Equatable, Codable, Sendable { // インデ�
 
     public var id: UUID
     public var arrivalStatus: ArrivalStatus
-    public var chaku: String
-    public var hatsu: String
+    @Time public var chaku: String?
+    @Time public var hatsu: String?
 
     public init(
         id: UUID = UUID(),
         arrivalStatus: ArrivalStatus,
-        chaku: String = "",
-        hatsu: String = ""
+        chaku: String? = nil,
+        hatsu: String? = nil
     ) {
         self.id = id
         self.arrivalStatus = arrivalStatus
@@ -337,19 +337,77 @@ public struct Jikoku: Identifiable, Equatable, Codable, Sendable { // インデ�
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = UUID()
         self.arrivalStatus = try container.decode(ArrivalStatus.self, forKey: .arrivalStatus)
-        self.chaku = try container.decode(String.self, forKey: .chaku)
-        self.hatsu = try container.decode(String.self, forKey: .hatsu)
+        self.chaku = try container.decode(String?.self, forKey: .chaku)
+        self.hatsu = try container.decode(String?.self, forKey: .hatsu)
+    }
+}
+
+@propertyWrapper
+public struct Time: Sendable {
+    public typealias TimeComponent = (hour: Int, minute: Int)
+
+    private var splitTime: TimeComponent?
+    private var rawTime: String?
+
+    public var wrappedValue: String? {
+        get { rawTime }
+        set { setTime(newValue) }
+    }
+
+    public var projectedValue: TimeComponent? { splitTime }
+
+    public init(wrappedValue time: String?) {
+        setTime(time)
+    }
+
+    func splitToTimeComponent(_ time: String) -> TimeComponent? {
+        guard time.count == 3 || time.count == 4 else { return nil }
+
+        let hourPart = String(time.prefix(time.count - 2))
+        let minutePart = String(time.suffix(2))
+
+        guard
+            let hour = Int(hourPart),
+            let minute = Int(minutePart),
+            hour < 24, minute < 60
+        else { return nil }
+
+        return (hour, minute)
+    }
+
+    private mutating func setTime(_ newTime: String?) {
+        splitTime = newTime.flatMap { splitToTimeComponent($0) }
+        rawTime = splitTime != nil ? newTime : nil
+    }
+}
+
+extension Time: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let decodedRawTime = try container.decode(String?.self)
+        setTime(decodedRawTime)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(wrappedValue)
+    }
+}
+
+extension Time: Equatable {
+    public static func == (lhs: Time, rhs: Time) -> Bool {
+        lhs.wrappedValue == rhs.wrappedValue
     }
 }
 
 // MARK: - enum
 
-public enum Houkou: String, Codable {
+public enum Houkou: String, Codable, Sendable {
     case kudari = "Kudari"
     case nobori = "Nobori"
 }
 
-public enum Ekijikokukeisiki: String, Codable {
+public enum Ekijikokukeisiki: String, Codable, Sendable{
     case hatsu = "Jikokukeisiki_Hatsu"
     case hatsuchaku = "Jikokukeisiki_Hatsuchaku"
     case kudariChaku = "Jikokukeisiki_KudariChaku"
@@ -357,7 +415,7 @@ public enum Ekijikokukeisiki: String, Codable {
 }
 
 public enum ArrivalStatus: String, Codable, Sendable {
-    case notOperate = "0"
+    case notOperate = ""
     case stop = "1"
     case pass = "2"
     case notGoThrough = "3"
@@ -367,12 +425,12 @@ public enum ArrivalStatus: String, Codable, Sendable {
     }
 }
 
-public enum Ekikibo: String, Codable {
+public enum Ekikibo: String, Codable, Sendable {
     case ippan = "Ekikibo_Ippan"
     case syuyou = "Ekikibo_Syuyou"
 }
 
-public enum DiagramSenStyle: String, Codable {
+public enum DiagramSenStyle: String, Codable, Sendable {
     case jissen = "SenStyle_Jissen"
     case hasen = "SenStyle_Hasen"
     case tensen = "SenStyle_Tensen"

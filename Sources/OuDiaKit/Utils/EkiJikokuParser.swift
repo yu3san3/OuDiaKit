@@ -2,15 +2,19 @@ import Foundation
 
 final class EkiJikokuParser {
     func parse(_ text: String) -> [Jikoku] {
+        if text.isEmpty {
+            return []
+        }
+
         return text
-            .split(separator: ",")
+            .components(separatedBy: ",")
             .map { parseRecord(String($0)) }
     }
 
     func parseRecord(_ record: String) -> Jikoku {
         // 運行なし
         if record.isEmpty {
-            return Jikoku(arrivalStatus: .notOperate, chaku: "", hatsu: "")
+            return Jikoku(arrivalStatus: .notOperate)
         }
 
         // 運行状態と時刻情報を分割
@@ -19,9 +23,7 @@ final class EkiJikokuParser {
         // 運行状態のみ記述されている場合 (ex: "1", "2")
         if components.count == 1 {
             return Jikoku(
-                arrivalStatus: ArrivalStatus(rawValueOrNotOperate: record),
-                chaku: "",
-                hatsu: ""
+                arrivalStatus: ArrivalStatus(rawValueOrNotOperate: record)
             )
         }
 

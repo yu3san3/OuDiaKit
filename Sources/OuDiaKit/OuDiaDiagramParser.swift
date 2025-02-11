@@ -1,7 +1,10 @@
 import Foundation
 
 final public class OuDiaDiagramParser {
-    /// 型のコーディングキーを JSON のキーからどのようにデコードするかを決定する値。
+    /// OuDia 形式のテキストデータを JSON に変換するためのコンバータ
+    public var converter = OuDiaJSONConverter()
+
+    /// 型のコーディングキーを JSON のキーからどのようにデコードするかを決定する値
     public var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .convertFromUpperCamelCase
 
     private var decoder: JSONDecoder {
@@ -25,7 +28,7 @@ final public class OuDiaDiagramParser {
         _ type: T.Type = OuDiaDiagram.self,
         from text: String
     ) throws -> T where T: Decodable {
-        let data = try OuDiaJSONConverter().convertToJSON(text)
+        let data = try converter.convertToJSON(text)
         return try decoder.decode(type, from: data)
     }
 }

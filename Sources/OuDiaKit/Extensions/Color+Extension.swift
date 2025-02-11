@@ -98,7 +98,7 @@ extension Color {
     }
 }
 
-// MARK: - Decodable
+// MARK: - Codable
 
 extension Color: Codable {
     public init(from decoder: Decoder) throws {

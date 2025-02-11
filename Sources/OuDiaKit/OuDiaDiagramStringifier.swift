@@ -1,14 +1,36 @@
 import Foundation
 
-public final class OuDiaDiagramStringifyer {
+public final class OuDiaDiagramStringifier {
+    /// `FileTypeAppComment` を上書きするための文字列
+    public let fileTypeAppComment: String?
+
+    /// `OuDiaDiagramStringifier` のインスタンスを生成する。
+    ///
+    /// - Parameter fileTypeAppComment: 出力の `FileTypeAppComment` を、ここで指定した文字列で上書きする。
+    ///
+    /// - NOTE: 明示的に `nil` を渡して初期化すれば、もとの `FileTypeAppComment` の値を維持することも可能である。
+    /// しかし、ファイルの生成元を保証するために、`nil` ではなく適切な値を指定するべき。
+    ///
+    /// ```swift
+    /// let stringifier = OuDiaDiagramStringifier(fileTypeAppComment: "YourAppName Ver. 1.0.0") // ⭕️
+    ///
+    /// let stringifier = OuDiaDiagramStringifier(fileTypeAppComment: nil) // ❌ (非推奨)
+    /// ```
+    public init(fileTypeAppComment: String?) {
+        self.fileTypeAppComment = fileTypeAppComment
+    }
+
+    /// `OuDiaDiagram` を文字列に変換する。
+    ///
+    /// - Parameter diagram: 文字列化する `OuDiaDiagram` オブジェクト
+    /// - Returns: `OuDia` ファイルの文字列
     public func stringify(_ diagram: OuDiaDiagram) -> String {
         var lines = [String]()
 
         lines.append("FileType=\(diagram.fileType)")
         lines.append(contentsOf: stringifyRosen(diagram.rosen))
         lines.append(contentsOf: stringifyDispProp(diagram.dispProp))
-        lines.append("FileTypeAppComment=\(diagram.fileTypeAppComment)")
-
+        lines.append("FileTypeAppComment=\(fileTypeAppComment ?? diagram.fileTypeAppComment)")
         return lines.joined(separator: "\n")
     }
 

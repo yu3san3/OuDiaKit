@@ -28,128 +28,133 @@ public final class OuDiaDiagramStringifier {
         var lines = [String]()
 
         lines.append("FileType=\(diagram.fileType)")
-        lines.append(contentsOf: stringifyRosen(diagram.rosen))
-        lines.append(contentsOf: stringifyDispProp(diagram.dispProp))
+        lines.append(contentsOf: stringifyRoute(diagram.route))
+        lines.append(contentsOf: stringifyDisplayProperty(diagram.displayProperty))
         lines.append("FileTypeAppComment=\(fileTypeAppComment ?? diagram.fileTypeAppComment)")
         return lines.joined(separator: "\n")
     }
 
-    private func stringifyRosen(_ rosen: Rosen) -> [String] {
+    private func stringifyRoute(_ route: Route) -> [String] {
         var lines = [String]()
 
         lines.append(contentsOf: [
             "Rosen.",
-            "Rosenmei=\(rosen.rosenmei)"
+            "Rosenmei=\(route.name)"
         ])
         lines.append(
-            contentsOf: rosen.eki // [Eki]
-                .map(stringifyEki) // [[String]]
+            contentsOf: route.stations // [Station]
+                .map(stringifyStation) // [[String]]
                 .flatMap { $0 } // [String]
         )
         lines.append(
-            contentsOf: rosen.ressyasyubetsu
-                .map(stringifyRessyasyubetsu)
+            contentsOf: route.trainTypes
+                .map(stringifyTrainType)
                 .flatMap { $0 }
         )
         lines.append(
-            contentsOf: rosen.dia
-                .map(stringifyDia)
+            contentsOf: route.timetables
+                .map(stringifyTimetable)
                 .flatMap { $0 }
         )
         lines.append(contentsOf: [
-            "KitenJikoku=\(rosen.kitenJikoku)",
-            "DiagramDgrYZahyouKyoriDefault=\(rosen.diagramDgrYZahyouKyoriDefault)",
-            "Comment=\(rosen.comment)",
+            "KitenJikoku=\(route.diagramBaseTime ?? "000")",
+            "DiagramDgrYZahyouKyoriDefault=\(route.diagramDefaultDistance)",
+            "Comment=\(route.comment)",
             "."
         ])
 
         return lines
     }
 
-    private func stringifyEki(_ eki: Eki) -> [String] {
+    private func stringifyStation(_ station: Station) -> [String] {
         [
             "Eki.",
-            "Ekimei=\(eki.ekimei)",
-            "Ekijikokukeisiki=\(eki.ekijikokukeisiki.rawValue)",
-            "Ekikibo=\(eki.ekikibo.rawValue)",
+            "Ekimei=\(station.name)",
+            "Ekijikokukeisiki=\(station.timeType.rawValue)",
+            "Ekikibo=\(station.scale.rawValue)",
+            station.borderLine.map { "Kyoukaisen=\($0)" },
+            station.downTrainInfoDisplayStyle.map { "DiagramRessyajouhouHyoujiKudari=\($0.rawValue)" },
+            station.upTrainInfoDisplayStyle.map { "DiagramRessyajouhouHyoujiNobori=\($0.rawValue)" },
             ".",
-        ]
+        ].compactMap { $0 }
     }
 
-    private func stringifyRessyasyubetsu(_ ressyasyubetsu: Ressyasyubetsu) -> [String] {
+    private func stringifyTrainType(_ trainType: TrainType) -> [String] {
         [
             "Ressyasyubetsu.",
-            "Syubetsumei=\(ressyasyubetsu.syubetsumei)",
-            ressyasyubetsu.ryakusyou.map { "Ryakusyou=\($0)" },
-            "JikokuhyouMojiColor=\(ressyasyubetsu.jikokuhyouMojiColor.oudColorCode())",
-            "JikokuhyouFontIndex=\(ressyasyubetsu.jikokuhyouFontIndex)",
-            "DiagramSenColor=\(ressyasyubetsu.diagramSenColor.oudColorCode())",
-            "DiagramSenStyle=\(ressyasyubetsu.diagramSenStyle.rawValue)",
-            ressyasyubetsu.stopMarkDrawType.map { "StopMarkDrawType=\($0)" },
+            "Syubetsumei=\(trainType.name)",
+            trainType.shortName.map { "Ryakusyou=\($0)" },
+            "JikokuhyouMojiColor=\(trainType.timetableTextColor.oudColorCode())",
+            "JikokuhyouFontIndex=\(trainType.timetableFontIndex)",
+            "DiagramSenColor=\(trainType.diagramLineColor.oudColorCode())",
+            "DiagramSenStyle=\(trainType.diagramLineStyle.rawValue)",
+            trainType.isDiagramLineBold.map { "DiagramSenIsBold=\($0)" },
+            trainType.stopMarkDrawType.map { "StopMarkDrawType=\($0)" },
             "."
         ].compactMap { $0 }
     }
 
-    private func stringifyDia(_ dia: Dia) -> [String] {
+    private func stringifyTimetable(_ timetable: Timetable) -> [String] {
         var lines = [String]()
 
         lines.append(contentsOf: [
             "Dia.",
-            "DiaName=\(dia.diaName)"
+            "DiaName=\(timetable.title)"
         ])
-        lines.append(contentsOf: stringifyRessyaGroup("Kudari", dia.kudari.ressya))
-        lines.append(contentsOf: stringifyRessyaGroup("Nobori", dia.nobori.ressya))
+        lines.append(contentsOf: stringifyTrainGroup("Kudari", timetable.down.trains))
+        lines.append(contentsOf: stringifyTrainGroup("Nobori", timetable.up.trains))
         lines.append(".")
 
         return lines
     }
 
-    private func stringifyRessyaGroup(_ houkou: String, _ ressyas: [Ressya]) -> [String] {
+    private func stringifyTrainGroup(_ direction: String, _ trains: [Train]) -> [String] {
         var lines = [String]()
 
-        lines.append("\(houkou).")
-        lines.append(contentsOf: ressyas
-            .map(stringifyRessya)
-            .flatMap { $0 }
+        lines.append("\(direction).")
+        lines.append(
+            contentsOf: trains
+                .map(stringifyTrain)
+                .flatMap { $0 }
         )
         lines.append(".")
 
         return lines
     }
 
-    private func stringifyRessya(_ ressya: Ressya) -> [String] {
+    private func stringifyTrain(_ train: Train) -> [String] {
         [
             "Ressya.",
-            "Houkou=\(ressya.houkou.rawValue)",
-            "Syubetsu=\(ressya.syubetsu)",
-            ressya.ressyabangou.map { "Ressyabangou=\($0)" },
-            ressya.ressyamei.map { "Ressyamei=\($0)" },
-            ressya.gousuu.map { "Gousuu=\($0)" },
-            "EkiJikoku=\(EkiJikokuStringifyer().stringify(ressya.ekiJikoku))",
+            "Houkou=\(train.direction.rawValue)",
+            "Syubetsu=\(train.type)",
+            train.number.map { "Ressyabangou=\($0)" },
+            train.name.map { "Ressyamei=\($0)" },
+            train.suffixNumber.map { "Gousuu=\($0)" },
+            "EkiJikoku=\(ScheduleStringifier().stringify(train.schedule))",
             "."
         ].compactMap { $0 }
     }
 
-    private func stringifyDispProp(_ dispProp: DispProp) -> [String] {
+    private func stringifyDisplayProperty(_ displayProperty: DisplayProperty) -> [String] {
         var lines = [String]()
 
         lines.append("DispProp.")
         lines.append(
-            contentsOf: dispProp.jikokuhyouFont
+            contentsOf: displayProperty.timetableFonts
                 .map { "JikokuhyouFont=\($0)" }
         )
         lines.append(contentsOf: [
-            "JikokuhyouVFont=\(dispProp.jikokuhyouVFont)",
-            "DiaEkimeiFont=\(dispProp.diaEkimeiFont)",
-            "DiaJikokuFont=\(dispProp.diaJikokuFont)",
-            "DiaRessyaFont=\(dispProp.diaRessyaFont)",
-            "CommentFont=\(dispProp.commentFont)",
-            "DiaMojiColor=\(dispProp.diaMojiColor.oudColorCode())",
-            "DiaHaikeiColor=\(dispProp.diaHaikeiColor.oudColorCode())",
-            "DiaRessyaColor=\(dispProp.diaRessyaColor.oudColorCode())",
-            "DiaJikuColor=\(dispProp.diaJikuColor.oudColorCode())",
-            "EkimeiLength=\(dispProp.ekimeiLength)",
-            "JikokuhyouRessyaWidth=\(dispProp.jikokuhyouRessyaWidth)",
+            "JikokuhyouVFont=\(displayProperty.timetableVerticalFont)",
+            "DiaEkimeiFont=\(displayProperty.diagramStationNameFont)",
+            "DiaJikokuFont=\(displayProperty.diagramTimeFont)",
+            "DiaRessyaFont=\(displayProperty.diagramTrainFont)",
+            "CommentFont=\(displayProperty.commentFont)",
+            "DiaMojiColor=\(displayProperty.diagramTextColor.oudColorCode())",
+            "DiaHaikeiColor=\(displayProperty.diagramBackgroundColor.oudColorCode())",
+            "DiaRessyaColor=\(displayProperty.diagramTrainColor.oudColorCode())",
+            "DiaJikuColor=\(displayProperty.diagramGridLineColor.oudColorCode())",
+            "EkimeiLength=\(displayProperty.stationNameLength)",
+            "JikokuhyouRessyaWidth=\(displayProperty.timetableTrainWidth)",
             "."
         ])
 

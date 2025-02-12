@@ -5,7 +5,7 @@ final public class OuDiaDiagramParser {
     public var converter = OuDiaJSONConverter()
 
     /// 型のコーディングキーを JSON のキーからどのようにデコードするかを決定する値
-    public var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .convertFromUpperCamelCase
+    public var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
 
     private var decoder: JSONDecoder {
         let decoder = JSONDecoder()
@@ -18,7 +18,7 @@ final public class OuDiaDiagramParser {
     /// 指定された型にOuDia形式のテキストデータをパース (オブジェクト化) する。
     ///
     /// このメソッドは、内部でOuDia 形式のテキストデータをまずは JSON へ変換し、
-    /// その JSON を指定された `Decodable` 型にデコードしています。
+    /// その JSON を指定された `Decodable` 型にデコードしている。
     ///
     /// - Parameters:
     ///   - type: デコードする型。デフォルトは `OuDiaDiagram`。

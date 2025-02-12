@@ -15,9 +15,17 @@ extension KeyedDecodingContainer {
         return intValue
     }
 
-    func decodeJikokuFromString(forKey key: KeyedDecodingContainer.Key) throws -> [Jikoku] {
+    func decodeBoolFromStringIfPresent(forKey key: KeyedDecodingContainer.Key) throws -> Bool? {
+        guard let stringValue = try decodeIfPresent(String.self, forKey: key) else {
+            return nil
+        }
+
+        return stringValue == "1" ? true : false
+    }
+
+    func decodeScheduleFromString(forKey key: KeyedDecodingContainer.Key) throws -> [ScheduleEntry] {
         let stringValue = try decode(String.self, forKey: key)
 
-        return EkiJikokuParser().parse(stringValue)
+        return ScheduleParser().parse(stringValue)
     }
 }

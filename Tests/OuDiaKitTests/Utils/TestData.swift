@@ -2,8 +2,8 @@ import SwiftUICore
 @testable import OuDiaKit
 
 enum TestData {
-    typealias EkiJikokuPair = (string: String, object: [Jikoku])
-    typealias EkiJikokuRecordPair = (string: String, object: Jikoku)
+    typealias SchedulePair = (string: String, object: [ScheduleEntry])
+    typealias ScheduleEntryPair = (string: String, object: ScheduleEntry)
 
     static let mockOuDiaText = """
     FileType=OuDia.1.02
@@ -109,111 +109,111 @@ enum TestData {
 
     static let mockOuDiaDiagram = OuDiaDiagram(
         fileType: "OuDia.1.02",
-        rosen: .init(
-            rosenmei: "名鉄名古屋本線",
-            eki: [
+        route: .init(
+            name: "名鉄名古屋本線",
+            stations: [
                 .init(
-                    ekimei: "金山",
-                    ekijikokukeisiki: .noboriChaku,
-                    ekikibo: .syuyou
+                    name: "金山",
+                    timeType: .upArrival,
+                    scale: .major
                 ),
                 .init(
-                    ekimei: "山王",
-                    ekijikokukeisiki: .hatsuchaku,
-                    ekikibo: .ippan
+                    name: "山王",
+                    timeType: .arrivalDeparture,
+                    scale: .normal
                 ),
                 .init(
-                    ekimei: "名鉄名古屋",
-                    ekijikokukeisiki: .kudariChaku,
-                    ekikibo: .syuyou
+                    name: "名鉄名古屋",
+                    timeType: .downArrival,
+                    scale: .major
                 )
             ],
-            ressyasyubetsu: [
+            trainTypes: [
                 .init(
-                    syubetsumei: "普通",
-                    jikokuhyouMojiColor: Color(oudColorCode: "00000000"),
-                    jikokuhyouFontIndex: 0,
-                    diagramSenColor: Color(oudColorCode: "00000000"),
-                    diagramSenStyle: .jissen,
+                    name: "普通",
+                    timetableTextColor: Color(oudColorCode: "00000000"),
+                    timetableFontIndex: 0,
+                    diagramLineColor: Color(oudColorCode: "00000000"),
+                    diagramLineStyle: .solid,
                     stopMarkDrawType: "EStopMarkDrawType_DrawOnStop"
                 ),
                 .init(
-                    syubetsumei: "特別急行",
-                    ryakusyou: "特急",
-                    jikokuhyouMojiColor: Color(oudColorCode: "000000FF"),
-                    jikokuhyouFontIndex: 0,
-                    diagramSenColor: Color(oudColorCode: "000000FF"),
-                    diagramSenStyle: .jissen,
+                    name: "特別急行",
+                    shortName: "特急",
+                    timetableTextColor: Color(oudColorCode: "000000FF"),
+                    timetableFontIndex: 0,
+                    diagramLineColor: Color(oudColorCode: "000000FF"),
+                    diagramLineStyle: .solid,
                     stopMarkDrawType: "EStopMarkDrawType_DrawOnStop"
                 )
             ],
-            dia: [
+            timetables: [
                 .init(
-                    diaName: "平日",
-                    kudari: .init(
-                        ressya: [
+                    title: "平日",
+                    down: .init(
+                        trains: [
                             .init(
-                                houkou: .kudari,
-                                syubetsu: 1,
-                                ressyabangou: "307",
-                                ekiJikoku: [
-                                    .init(arrivalStatus: .stop, chaku: "", hatsu: "1009"),
+                                direction: .down,
+                                type: 1,
+                                number: "307",
+                                schedule: [
+                                    .init(arrivalStatus: .stop, arrival: "", departure: "1009"),
                                     .init(arrivalStatus: .pass),
-                                    .init(arrivalStatus: .stop, chaku: "1014", hatsu: "")
+                                    .init(arrivalStatus: .stop, arrival: "1014", departure: "")
                                 ]
                             ),
                             .init(
-                                houkou: .kudari,
-                                syubetsu: 0,
-                                ressyabangou: "1093",
-                                ekiJikoku: [
-                                    .init(arrivalStatus: .stop, chaku: "", hatsu: "1011"),
-                                    .init(arrivalStatus: .stop, chaku: "1013", hatsu: "1013"),
-                                    .init(arrivalStatus: .stop, chaku: "1016", hatsu: "")
+                                direction: .down,
+                                type: 0,
+                                number: "1093",
+                                schedule: [
+                                    .init(arrivalStatus: .stop, arrival: "", departure: "1011"),
+                                    .init(arrivalStatus: .stop, arrival: "1013", departure: "1013"),
+                                    .init(arrivalStatus: .stop, arrival: "1016", departure: "")
                                 ]
                             )
                         ]
                     ),
-                    nobori: .init(ressya: [])
+                    up: .init(trains: [])
                 ),
                 .init(
-                    diaName: "休日",
-                    kudari: .init(
-                        ressya: [
+                    title: "休日",
+                    down: .init(
+                        trains: [
                             .init(
-                                houkou: .kudari,
-                                syubetsu: 1,
-                                ressyabangou: "101",
-                                ekiJikoku: [
-                                    .init(arrivalStatus: .stop, chaku: "", hatsu: "1004"),
+                                direction: .down,
+                                type: 1,
+                                number: "101",
+                                schedule: [
+                                    .init(arrivalStatus: .stop, arrival: "", departure: "1004"),
                                     .init(arrivalStatus: .pass),
-                                    .init(arrivalStatus: .stop, chaku: "1008", hatsu: "")
+                                    .init(arrivalStatus: .stop, arrival: "1008", departure: "")
                                 ]
                             )
                         ]
                     ),
-                    nobori: .init(
-                        ressya: [
+                    up: .init(
+                        trains: [
                             .init(
-                                houkou: .nobori,
-                                syubetsu: 0,
-                                ressyabangou: "100",
-                                ekiJikoku: [
-                                    .init(arrivalStatus: .stop, chaku: "", hatsu: "1003"),
+                                direction: .up,
+                                type: 0,
+                                number: "100",
+                                schedule: [
+                                    .init(arrivalStatus: .stop, arrival: "", departure: "1003"),
                                     .init(arrivalStatus: .pass),
-                                    .init(arrivalStatus: .stop, chaku: "1006", hatsu: "")
+                                    .init(arrivalStatus: .stop, arrival: "1006", departure: "")
                                 ]
                             )
                         ]
                     )
                 )
             ],
-            kitenJikoku: "400",
-            diagramDgrYZahyouKyoriDefault: 60,
+            diagramBaseTime: "400",
+            diagramDefaultDistance: 60,
             comment: ""
         ),
-        dispProp: .init(
-            jikokuhyouFont: [
+        displayProperty: .init(
+            timetableFonts: [
                 "PointTextHeight=9;Facename=ＭＳ ゴシック",
                 "PointTextHeight=9;Facename=ＭＳ ゴシック;Bold=1",
                 "PointTextHeight=9;Facename=ＭＳ ゴシック;Itaric=1",
@@ -223,22 +223,22 @@ enum TestData {
                 "PointTextHeight=9;Facename=ＭＳ ゴシック",
                 "PointTextHeight=9;Facename=ＭＳ ゴシック",
             ],
-            jikokuhyouVFont: "PointTextHeight=9;Facename=@ＭＳ ゴシック",
-            diaEkimeiFont: "PointTextHeight=9;Facename=ＭＳ ゴシック",
-            diaJikokuFont: "PointTextHeight=9;Facename=ＭＳ ゴシック",
-            diaRessyaFont: "PointTextHeight=9;Facename=ＭＳ ゴシック",
+            timetableVerticalFont: "PointTextHeight=9;Facename=@ＭＳ ゴシック",
+            diagramStationNameFont: "PointTextHeight=9;Facename=ＭＳ ゴシック",
+            diagramTimeFont: "PointTextHeight=9;Facename=ＭＳ ゴシック",
+            diagramTrainFont: "PointTextHeight=9;Facename=ＭＳ ゴシック",
             commentFont: "PointTextHeight=9;Facename=ＭＳ ゴシック",
-            diaMojiColor: Color(oudColorCode: "00000000"),
-            diaHaikeiColor: Color(oudColorCode: "00FFFFFF"),
-            diaRessyaColor: Color(oudColorCode: "00000000"),
-            diaJikuColor: Color(oudColorCode: "00C0C0C0"),
-            ekimeiLength: "6",
-            jikokuhyouRessyaWidth: "5"
+            diagramTextColor: Color(oudColorCode: "00000000"),
+            diagramBackgroundColor: Color(oudColorCode: "00FFFFFF"),
+            diagramTrainColor: Color(oudColorCode: "00000000"),
+            diagramGridLineColor: Color(oudColorCode: "00C0C0C0"),
+            stationNameLength: "6",
+            timetableTrainWidth: "5"
         ),
         fileTypeAppComment: "OuDia Ver. 1.02.05"
     )
 
-    static let ekiJikokuPairs: [EkiJikokuPair] = [
+    static let schedulePairs: [SchedulePair] = [
         (
             "",
             []
@@ -246,31 +246,31 @@ enum TestData {
         (
             ",,1;900,1;910/",
             [
-                Jikoku(arrivalStatus: .notOperate),
-                Jikoku(arrivalStatus: .notOperate),
-                Jikoku(arrivalStatus: .stop, chaku: "", hatsu: "900"),
-                Jikoku(arrivalStatus: .stop, chaku: "910", hatsu: "")
+                ScheduleEntry(arrivalStatus: .notOperate),
+                ScheduleEntry(arrivalStatus: .notOperate),
+                ScheduleEntry(arrivalStatus: .stop, arrival: "", departure: "900"),
+                ScheduleEntry(arrivalStatus: .stop, arrival: "910", departure: "")
             ]
         ),
         (
             "1;900,3,3,1;910/",
             [
-                Jikoku(arrivalStatus: .stop, chaku: "", hatsu: "900"),
-                Jikoku(arrivalStatus: .notGoThrough),
-                Jikoku(arrivalStatus: .notGoThrough),
-                Jikoku(arrivalStatus: .stop, chaku: "910", hatsu: "")
+                ScheduleEntry(arrivalStatus: .stop, arrival: "", departure: "900"),
+                ScheduleEntry(arrivalStatus: .notGoThrough),
+                ScheduleEntry(arrivalStatus: .notGoThrough),
+                ScheduleEntry(arrivalStatus: .stop, arrival: "910", departure: "")
             ]
         )
     ]
 
-    static let ekiJikokuRecordPairs: [EkiJikokuRecordPair] = [
-        ("",  Jikoku(arrivalStatus: .notOperate)),
-        ("1", Jikoku(arrivalStatus: .stop)),
-        ("2", Jikoku(arrivalStatus: .pass)),
-        ("3", Jikoku(arrivalStatus: .notGoThrough)),
-        ("1;900",      Jikoku(arrivalStatus: .stop, chaku: "",    hatsu: "900")),
-        ("1;900/",     Jikoku(arrivalStatus: .stop, chaku: "900", hatsu: "")),
-        ("1;900/1000", Jikoku(arrivalStatus: .stop, chaku: "900", hatsu: "1000")),
-        ("2;1000",     Jikoku(arrivalStatus: .pass, chaku: "",    hatsu: "1000"))
+    static let scheduleEntryPairs: [ScheduleEntryPair] = [
+        ("",  ScheduleEntry(arrivalStatus: .notOperate)),
+        ("1", ScheduleEntry(arrivalStatus: .stop)),
+        ("2", ScheduleEntry(arrivalStatus: .pass)),
+        ("3", ScheduleEntry(arrivalStatus: .notGoThrough)),
+        ("1;900",      ScheduleEntry(arrivalStatus: .stop, arrival: "",    departure: "900")),
+        ("1;900/",     ScheduleEntry(arrivalStatus: .stop, arrival: "900", departure: "")),
+        ("1;900/1000", ScheduleEntry(arrivalStatus: .stop, arrival: "900", departure: "1000")),
+        ("2;1000",     ScheduleEntry(arrivalStatus: .pass, arrival: "",    departure: "1000"))
     ]
 }

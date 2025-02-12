@@ -17,7 +17,7 @@ struct OuDiaDiagramStringifierTests {
         }
     }
 
-    @Test("FileTypeAppCommentが正しく書き換えられるか検証")
+    @Test("FileTypeAppComment が正しく書き換えられるか検証")
     func testOuDiaDiagramStringifyWithFileTypeAppComment() throws {
         let fileTypeAppComment = "MyWonderfulApp Ver.1.0.0"
 

@@ -1,37 +1,37 @@
 import Foundation
 
-public struct Jikoku: Identifiable, Equatable, Sendable { // インデント数: 5
+public struct ScheduleEntry: Identifiable, Equatable, Sendable { // インデント数: 5
     public var id: UUID
     public var arrivalStatus: ArrivalStatus
-    @Time public var chaku: String?
-    @Time public var hatsu: String?
+    @Time public var arrival: String?
+    @Time public var departure: String?
 
     public init(
         id: UUID = UUID(),
         arrivalStatus: ArrivalStatus,
-        chaku: String? = nil,
-        hatsu: String? = nil
+        arrival: String? = nil,
+        departure: String? = nil
     ) {
         self.id = id
         self.arrivalStatus = arrivalStatus
-        self.chaku = chaku
-        self.hatsu = hatsu
+        self.arrival = arrival
+        self.departure = departure
     }
 }
 
-extension Jikoku: Codable {
+extension ScheduleEntry: Codable {
     enum CodingKeys: CodingKey {
-        case arrivalStatus,
-             chaku,
-             hatsu
+        case arrivalStatus
+        case arrival
+        case departure
     }
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = UUID()
         self.arrivalStatus = try container.decode(ArrivalStatus.self, forKey: .arrivalStatus)
-        self.chaku = try container.decode(String?.self, forKey: .chaku)
-        self.hatsu = try container.decode(String?.self, forKey: .hatsu)
+        self.arrival = try container.decode(String?.self, forKey: .arrival)
+        self.departure = try container.decode(String?.self, forKey: .departure)
     }
 }
 

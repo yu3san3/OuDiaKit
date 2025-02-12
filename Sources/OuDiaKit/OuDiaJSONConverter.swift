@@ -41,7 +41,7 @@ final public class OuDiaJSONConverter {
             let line = lines[index].trimmingCharacters(in: .whitespacesAndNewlines)
             index += 1
 
-            // 空行はスキップ、"." はブロック終了
+            // 空行はスキップし、"." はブロックを終了する。
             if line.isEmpty { continue }
             if line == "." { break }
 
@@ -51,7 +51,7 @@ final public class OuDiaJSONConverter {
                 let subBlock = parseBlock(lines: lines, index: &index)
                 add(key: key, value: subBlock, to: &dict)
             } else if let equalRange = line.range(of: "=") {
-                // key=value 行。rangeを利用することでsplit処理を簡潔に
+                // key=value 形式
                 let key = String(line[..<equalRange.lowerBound])
                 let value = String(line[equalRange.upperBound...])
                 add(key: key, value: value, to: &dict)

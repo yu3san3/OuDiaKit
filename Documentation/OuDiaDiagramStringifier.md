@@ -19,8 +19,8 @@ import OuDiaKit
 
 let diagram = OuDiaDiagram(
     fileType: "OuDia.1.02",
-    rosen: <#Rosen#>,
-    dispProp: <#DispProp#>,
+    route: <#Route#>,
+    displayProperty: <#DisplayProperty#>,
     fileTypeAppComment: "OuDia Ver. 1.02.05"
 )
 

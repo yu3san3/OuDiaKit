@@ -21,82 +21,82 @@ struct OuDiaJSONConverterTests {
         #expect(fileTypeAppComment == "OuDia Ver. 1.02.05")
     }
 
-    @Test("Rosen の検証")
-    func testRosenParsing() throws {
-        let rosenmei: String = try getNestedValue(for: "Rosen.Rosenmei")
+    @Test("Route の検証")
+    func testRouteParsing() throws {
+        let routeName: String = try getNestedValue(for: "Rosen.Rosenmei")
 
-        #expect(rosenmei == "名鉄名古屋本線")
+        #expect(routeName == "名鉄名古屋本線")
     }
 
-    @Test("Eki の検証")
-    func testEkiParsing() throws {
-        let ekiArray: [[String: Any]] = try getNestedValue(for: "Rosen.Eki")
+    @Test("Station の検証")
+    func testStationParsing() throws {
+        let stations: [[String: Any]] = try getNestedValue(for: "Rosen.Eki")
 
-        #expect(ekiArray.count == 3)
+        #expect(stations.count == 3)
 
-        #expect(ekiArray[0]["Ekimei"] as? String == "金山")
-        #expect(ekiArray[0]["Ekijikokukeisiki"] as? String == "Jikokukeisiki_NoboriChaku")
-        #expect(ekiArray[0]["Ekikibo"] as? String == "Ekikibo_Syuyou")
+        #expect(stations[0]["Ekimei"] as? String == "金山")
+        #expect(stations[0]["Ekijikokukeisiki"] as? String == "Jikokukeisiki_NoboriChaku")
+        #expect(stations[0]["Ekikibo"] as? String == "Ekikibo_Syuyou")
 
-        #expect(ekiArray[1]["Ekimei"] as? String == "山王")
-        #expect(ekiArray[1]["Ekijikokukeisiki"] as? String == "Jikokukeisiki_Hatsuchaku")
-        #expect(ekiArray[1]["Ekikibo"] as? String == "Ekikibo_Ippan")
+        #expect(stations[1]["Ekimei"] as? String == "山王")
+        #expect(stations[1]["Ekijikokukeisiki"] as? String == "Jikokukeisiki_Hatsuchaku")
+        #expect(stations[1]["Ekikibo"] as? String == "Ekikibo_Ippan")
 
-        #expect(ekiArray[2]["Ekimei"] as? String == "名鉄名古屋")
-        #expect(ekiArray[2]["Ekijikokukeisiki"] as? String == "Jikokukeisiki_KudariChaku")
-        #expect(ekiArray[2]["Ekikibo"] as? String == "Ekikibo_Syuyou")
+        #expect(stations[2]["Ekimei"] as? String == "名鉄名古屋")
+        #expect(stations[2]["Ekijikokukeisiki"] as? String == "Jikokukeisiki_KudariChaku")
+        #expect(stations[2]["Ekikibo"] as? String == "Ekikibo_Syuyou")
     }
 
-    @Test("Ressyasyubetsu の検証")
-    func testRessyasyubetsuParsing() throws {
-        let ressyasyubetsuArray: [[String: Any]] = try getNestedValue(for: "Rosen.Ressyasyubetsu")
+    @Test("TrainType の検証")
+    func testTrainTypeParsing() throws {
+        let trainTypes: [[String: Any]] = try getNestedValue(for: "Rosen.Ressyasyubetsu")
 
-        #expect(ressyasyubetsuArray.count == 2)
+        #expect(trainTypes.count == 2)
 
-        #expect(ressyasyubetsuArray[0]["Syubetsumei"] as? String == "普通")
-        #expect(ressyasyubetsuArray[0]["JikokuhyouMojiColor"] as? String == "00000000")
+        #expect(trainTypes[0]["Syubetsumei"] as? String == "普通")
+        #expect(trainTypes[0]["JikokuhyouMojiColor"] as? String == "00000000")
 
-        #expect(ressyasyubetsuArray[1]["Syubetsumei"] as? String == "特別急行")
-        #expect(ressyasyubetsuArray[1]["JikokuhyouMojiColor"] as? String == "000000FF")
+        #expect(trainTypes[1]["Syubetsumei"] as? String == "特別急行")
+        #expect(trainTypes[1]["JikokuhyouMojiColor"] as? String == "000000FF")
     }
 
-    @Test("Dia の検証")
-    func testDiaParsing() throws {
-        let diaArray: [[String: Any]] = try getNestedValue(for: "Rosen.Dia")
+    @Test("Timetable の検証")
+    func testTimetableParsing() throws {
+        let timetables: [[String: Any]] = try getNestedValue(for: "Rosen.Dia")
 
-        #expect(diaArray.count == 2)
-        #expect(diaArray[0]["DiaName"] as? String == "平日")
-        #expect(diaArray[1]["DiaName"] as? String == "休日")
+        #expect(timetables.count == 2)
+        #expect(timetables[0]["DiaName"] as? String == "平日")
+        #expect(timetables[1]["DiaName"] as? String == "休日")
     }
 
-    @Test("Ressya の検証")
-    func testRessyaParsing() throws {
-        let diaArray: [[String: Any]] = try getNestedValue(for: "Rosen.Dia")
-        let kudariRessyaArray: [[String: Any]] = try getNestedValue(diaArray[0], for: "Kudari.Ressya")
+    @Test("Train の検証")
+    func testTrainParsing() throws {
+        let timetables: [[String: Any]] = try getNestedValue(for: "Rosen.Dia")
+        let downTrains: [[String: Any]] = try getNestedValue(timetables[0], for: "Kudari.Ressya")
 
-        #expect(kudariRessyaArray.count == 2)
+        #expect(downTrains.count == 2)
 
-        #expect(kudariRessyaArray[0]["Ressyabangou"] as? String == "307")
-        #expect(kudariRessyaArray[0]["Syubetsu"] as? String == "1")
+        #expect(downTrains[0]["Ressyabangou"] as? String == "307")
+        #expect(downTrains[0]["Syubetsu"] as? String == "1")
 
-        #expect(kudariRessyaArray[1]["Ressyabangou"] as? String == "1093")
-        #expect(kudariRessyaArray[1]["Syubetsu"] as? String == "0")
+        #expect(downTrains[1]["Ressyabangou"] as? String == "1093")
+        #expect(downTrains[1]["Syubetsu"] as? String == "0")
     }
 
-    @Test("DispProp の検証")
-    func testDispPropParsing() throws {
-        let dispProp: [String: Any] = try getValue(for: "DispProp")
+    @Test("DisplayProperty の検証")
+    func testDisplayPropertyParsing() throws {
+        let displayProperty: [String: Any] = try getValue(for: "DispProp")
 
-        #expect(dispProp["DiaMojiColor"] as? String == "00000000")
-        #expect(dispProp["DiaHaikeiColor"] as? String == "00FFFFFF")
-        #expect(dispProp["DiaJikuColor"] as? String == "00C0C0C0")
+        #expect(displayProperty["DiaMojiColor"] as? String == "00000000")
+        #expect(displayProperty["DiaHaikeiColor"] as? String == "00FFFFFF")
+        #expect(displayProperty["DiaJikuColor"] as? String == "00C0C0C0")
 
-        let jikokuhyouFontArray: [String] = try #require(dispProp["JikokuhyouFont"] as? [String])
+        let timetableFonts: [String] = try #require(displayProperty["JikokuhyouFont"] as? [String])
 
-        #expect(jikokuhyouFontArray.count == 8)
+        #expect(timetableFonts.count == 8)
 
-        #expect(jikokuhyouFontArray[0] == "PointTextHeight=9;Facename=ＭＳ ゴシック")
-        #expect(jikokuhyouFontArray[1] == "PointTextHeight=9;Facename=ＭＳ ゴシック;Bold=1")
+        #expect(timetableFonts[0] == "PointTextHeight=9;Facename=ＭＳ ゴシック")
+        #expect(timetableFonts[1] == "PointTextHeight=9;Facename=ＭＳ ゴシック;Bold=1")
     }
 
     // MARK: Helper Methods

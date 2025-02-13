@@ -15,18 +15,7 @@ struct TimePropertyWrapperTests {
         @Time var timeEmpty = ""
         @Time var timeNil = nil
 
-        var invalidWrappedTimes: [String?] {
-            [
-                time10,
-                time1060,
-                time2500,
-                timeAbc,
-                timeEmpty,
-                timeNil,
-            ]
-        }
-
-        var invalidProjectedTimes: [Time.TimeComponent?] {
+        var invalidTimes: [Time] {
             [
                 $time10,
                 $time1060,
@@ -48,25 +37,30 @@ struct TimePropertyWrapperTests {
     func testValidTime930() throws {
         #expect(testData.time930 == "930")
 
-        let time = try #require(testData.$time930)
-        #expect(time.hour == 9)
-        #expect(time.minute == 30)
+        let time = testData.$time930
+        #expect(time.splitTime?.hour == 9)
+        #expect(time.splitTime?.minute == 30)
+
+        #expect(time.minutesFromMidnight == 570)
     }
 
     @Test("正しい時刻 1030")
     func testValidTime1030() throws {
         #expect(testData.time1030 == "1030")
 
-        let time = try #require(testData.$time1030)
-        #expect(time.hour == 10)
-        #expect(time.minute == 30)
+        let time = testData.$time1030
+        #expect(time.splitTime?.hour == 10)
+        #expect(time.splitTime?.minute == 30)
+
+        #expect(time.minutesFromMidnight == 630)
     }
 
     @Test("誤った時刻")
     func testInvalidTimes() {
-        zip(testData.invalidWrappedTimes, testData.invalidProjectedTimes).forEach {
-            #expect($0 == nil)
-            #expect($1 == nil)
+        testData.invalidTimes.forEach { time in
+            #expect(time.wrappedValue == nil)
+            #expect(time.projectedValue.splitTime == nil)
+            #expect(time.projectedValue.minutesFromMidnight == nil)
         }
     }
 }

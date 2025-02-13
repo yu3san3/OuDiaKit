@@ -5,7 +5,10 @@ public struct Time: Sendable {
     public typealias TimeComponent = (hour: Int, minute: Int)
 
     /// `(hour: Int, minute: Int)` 形式での時刻
-    private var splitTime: TimeComponent?
+    public var splitTime: TimeComponent?
+
+    /// 0時00分からの経過時間(分)
+    public var minutesFromMidnight: Int?
 
     /// 元の文字列形式の時刻
     private var rawTime: String?
@@ -17,14 +20,20 @@ public struct Time: Sendable {
         set { setTime(newValue) }
     }
 
-    /// `projectedValue` は、`(hour: Int, minute: Int)` 形式での時刻情報を提供します。
+    /// `Time` 構造体のインスタンスを提供します。
+    ///
+    /// Timeのインスタンスを通じて、以下の値を取得できます。
+    /// - 時刻文字列の解析結果 `(hour: Int, minute: Int)`
+    /// - 0時00分からの経過時間(分)
     ///
     /// - 例:
     ///   ```swift
     ///   @Time var time = "930"
-    ///   print($time) // (hour: 9, minute: 30)
+    ///
+    ///   print($time.splitTime) // (hour: 9, minute: 30))
+    ///   print($time.minutesFromMidnight) // 570
     ///   ```
-    public var projectedValue: TimeComponent? { splitTime }
+    public var projectedValue: Self { self }
 
     /// 時刻を表すプロパティラッパー
     ///
@@ -67,6 +76,7 @@ public struct Time: Sendable {
     /// - Parameter newTime: `"HHMM"` または `"HMM"` の形式の時刻文字列
     private mutating func setTime(_ newTime: String?) {
         splitTime = newTime.flatMap { splitToTimeComponent($0) }
+        minutesFromMidnight = splitTime.flatMap { $0.hour * 60 + $0.minute }
         rawTime = splitTime != nil ? newTime : nil
     }
 }

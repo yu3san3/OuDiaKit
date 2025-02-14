@@ -1,5 +1,7 @@
 import Foundation
 
+public typealias Schedule = [ScheduleEntry]
+
 public struct ScheduleEntry: Identifiable, Equatable, Sendable { // インデント数: 5
     public var id: UUID
     public var arrivalStatus: ArrivalStatus

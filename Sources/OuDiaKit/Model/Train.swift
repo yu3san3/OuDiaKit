@@ -13,7 +13,7 @@ public struct Train: Identifiable, Equatable, Sendable { // インデント数: 
     /// 号数 Gousuu
     public var suffixNumber: String?
     /// 駅時刻 EkiJikoku
-    public var schedule: [ScheduleEntry]
+    public var schedule: Schedule
     /// 備考 Bikou
     public var remark: String?
 
@@ -24,7 +24,7 @@ public struct Train: Identifiable, Equatable, Sendable { // インデント数: 
         number: String? = nil,
         name: String? = nil,
         suffixNumber: String? = nil,
-        schedule: [ScheduleEntry],
+        schedule: Schedule,
         remark: String? = nil
     ) {
         self.id = id

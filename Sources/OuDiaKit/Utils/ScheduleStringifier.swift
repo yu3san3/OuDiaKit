@@ -5,7 +5,7 @@ final class ScheduleStringifier {
     ///
     /// - Parameter schedule: `ScheduleEntry`の配列
     /// - Returns: 文字列化された時刻データの文字列
-    func stringify(_ schedule: [ScheduleEntry]) -> String {
+    func stringify(_ schedule: Schedule) -> String {
         schedule
             .map { stringifyEntry($0) }
             .joined(separator: ",")

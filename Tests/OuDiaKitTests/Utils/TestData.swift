@@ -2,7 +2,7 @@ import SwiftUICore
 @testable import OuDiaKit
 
 enum TestData {
-    typealias SchedulePair = (string: String, object: [ScheduleEntry])
+    typealias SchedulePair = (string: String, object: Schedule)
     typealias ScheduleEntryPair = (string: String, object: ScheduleEntry)
 
     static let mockOuDiaText = """

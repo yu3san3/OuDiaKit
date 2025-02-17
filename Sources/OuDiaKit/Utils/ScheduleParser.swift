@@ -5,7 +5,7 @@ final class ScheduleParser {
     ///
     /// - Parameter text: OuDiaファイルにおける、`EKiJikoku=`以降の文字列
     /// - Returns: パースされた`ScheduleEntry`構造体の配列
-    func parse(_ text: String) -> [ScheduleEntry] {
+    func parse(_ text: String) -> Schedule {
         if text.isEmpty {
             return []
         }

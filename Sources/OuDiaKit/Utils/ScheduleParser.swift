@@ -40,14 +40,14 @@ final class ScheduleParser {
 
         // "/" がない場合 → 発時刻のみ
         if !timePart.contains("/") {
-            return ScheduleEntry(arrivalStatus: status, arrival: "", departure: timePart)
+            return ScheduleEntry(arrivalStatus: status, arrival: nil, departure: timePart)
         }
 
         // "HHMM/" → ["HHMM"] 着時刻のみ
         // "HHMM/HHMM" → ["HHMM", "HHMM"] 着発
         let times = timePart.split(separator: "/", maxSplits: 1).map(String.init)
-        let arrival = times.first ?? ""
-        let departure = times.count > 1 ? times[1] : ""
+        let arrival = times.first
+        let departure = times.count > 1 ? times[1] : nil
 
         return ScheduleEntry(arrivalStatus: status, arrival: arrival, departure: departure)
     }

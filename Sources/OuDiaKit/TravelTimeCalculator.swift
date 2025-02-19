@@ -32,6 +32,8 @@ public enum TravelTimeCalculator {
     }
 
     /// 複数列車の各駅間走行時間の配列から、同一区間ごとに最短の走行時間を求める。
+    ///
+    /// 当該区間を走る列車がないなどの事情で最短走行時間を求められなかった場合、走行時間は`1`として扱われる。
     static func mergeTravelTimesList(_ travelTimesList: [[Int]]) -> [Int] {
         // 各列車で区間数が異なるため、最大区間数を基準とする
         let maxCount = travelTimesList.map(\.count).max() ?? 0
@@ -45,6 +47,7 @@ public enum TravelTimeCalculator {
                 }
                 .min() ?? Int.max
         }
+        .map { $0 == Int.max ? 1 : $0 }
     }
 
     /// `Timetable`の配列から時刻データ`Schedule`の配列を抜き出す。

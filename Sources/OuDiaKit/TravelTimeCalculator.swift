@@ -70,7 +70,7 @@ public enum TravelTimeCalculator {
 
     /// 2つの駅間の走行時間を計算する。
     ///
-    /// 現在の駅の出発時刻と次駅の到着時刻（なければ出発時刻）との差を算出し、最低1分とする。
+    /// 現在の駅の出発時刻と次駅の到着時刻（なければ出発時刻）との差を算出する。差が0分となった場合、1分として扱う。
     private static func calculateTravelTime(
         from current: ScheduleEntry,
         to next: ScheduleEntry

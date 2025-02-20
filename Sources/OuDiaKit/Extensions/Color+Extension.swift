@@ -44,26 +44,20 @@ extension Color {
     /// `Color.gray` のようなシステム定義色でも、`sRGB` に統一される。
     /// 取得できない場合、デフォルトの `(0, 0, 0, 1)` (黒) を返す。
     var components: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
-        #if canImport(UIKit)
-        typealias NativeColor = UIColor
-        #elseif canImport(AppKit)
-        typealias NativeColor = NSColor
-        #endif
-
         var r: CGFloat = 0
         var g: CGFloat = 0
         var b: CGFloat = 0
         var a: CGFloat = 0
 
-        guard
-            let _ = NativeColor(self)
-                .usingColorSpace(.sRGB)?
-                .getRed(&r, green: &g, blue: &b, alpha: &a)
-        else {
-            return (0, 0, 0, 1)
-        }
+        #if canImport(UIKit)
+        let isSuccess = UIColor(self).getRed(&r, green: &g, blue: &b, alpha: &a)
+        #elseif canImport(AppKit)
+        let isSuccess = NSColor(self)
+            .usingColorSpace(.sRGB)?
+            .getRed(&r, green: &g, blue: &b, alpha: &a) != nil
+        #endif
 
-        return (r, g, b, a)
+        return isSuccess ? (r, g, b, a) : (0, 0, 0, 1)
     }
 
     /// `Color` を ABGR (AABBGGRR) 形式の16進数文字列に変換する。

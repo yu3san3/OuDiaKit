@@ -92,6 +92,12 @@ struct TravelTimeCalculatorTests {
                 [0, 0, 0]
             ),
             (
+                [
+                    [Int.max, Int.max]
+                ],
+                [1, 1]
+            ),
+            (
                 Array(
                     repeating: Array(repeating: 1, count: 100),
                     count: 100

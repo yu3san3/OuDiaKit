@@ -3,20 +3,42 @@ import Foundation
 public enum TravelTimeCalculator {
     static let oneDayInMinute = 1440
 
-    /// 時刻表から各駅の発着時刻`schedule`を抽出し、各駅間の走行時間(最小のもの)を計算する。
+    /// すべての列車データをもとに、各駅間の走行時間(最小のもの)を計算する。
     public static func calculateTravelTimes(for timetables: [Timetable]) async -> [Int] {
         let schedules = extractSchedules(from: timetables)
 
         async let downTravelTimesList = schedules.down.map { schedule in
             calculateTravelTimes(for: schedule)
         }
-        async let upTravelTimesList = schedules.up.map { schedule in
-            calculateTravelTimes(for: schedule)
-        }
+        async let upTravelTimesList = schedules.up.reversed()
+            .map { schedule in
+                Array(
+                    calculateTravelTimes(for: schedule)
+                        .reversed()
+                )
+            }
 
         let travelTimesList = await downTravelTimesList + upTravelTimesList
 
         return mergeTravelTimesList(travelTimesList)
+    }
+
+    /// 各駅間の走行時間をもとに、基点駅からの距離を求める。
+    ///
+    /// - Parameter travelTimes: 各駅間の走行時間
+    /// - Returns: 基点駅からの距離を表す配列
+    ///
+    /// - 例:
+    /// [1, 2, 3, 4, 5] → [1, 3, 6, 10, 15]
+    public static func convertTravelTimesToDistanceFromBaseStation(
+        travelTimes: [Int],
+        direction: TrainDirection
+    ) -> [Int] {
+        travelTimes
+            .reversed(shouldReverse: direction == .up)
+            .reduce(into: []) { result, num in
+                result.append((result.last ?? 0) + num)
+            }
     }
 
     /// 単一の列車スケジュールから、各駅間の走行時間(分)を計算する。
@@ -32,6 +54,8 @@ public enum TravelTimeCalculator {
     }
 
     /// 複数列車の各駅間走行時間の配列から、同一区間ごとに最短の走行時間を求める。
+    ///
+    /// 当該区間を走る列車がないなどの事情で最短走行時間を求められなかった場合、走行時間は`1`として扱われる。
     static func mergeTravelTimesList(_ travelTimesList: [[Int]]) -> [Int] {
         // 各列車で区間数が異なるため、最大区間数を基準とする
         let maxCount = travelTimesList.map(\.count).max() ?? 0
@@ -45,6 +69,7 @@ public enum TravelTimeCalculator {
                 }
                 .min() ?? Int.max
         }
+        .map { $0 == Int.max ? 1 : $0 }
     }
 
     /// `Timetable`の配列から時刻データ`Schedule`の配列を抜き出す。
@@ -63,7 +88,7 @@ public enum TravelTimeCalculator {
 
     /// 2つの駅間の走行時間を計算する。
     ///
-    /// 現在の駅の出発時刻と次駅の到着時刻（なければ出発時刻）との差を算出し、最低1分とする。
+    /// 現在の駅の出発時刻と次駅の到着時刻（なければ出発時刻）との差を算出する。差が0分となった場合、1分として扱う。
     private static func calculateTravelTime(
         from current: ScheduleEntry,
         to next: ScheduleEntry

@@ -10,9 +10,13 @@ public enum TravelTimeCalculator {
         async let downTravelTimesList = schedules.down.map { schedule in
             calculateTravelTimes(for: schedule)
         }
-        async let upTravelTimesList = schedules.up.map { schedule in
-            calculateTravelTimes(for: schedule)
-        }
+        async let upTravelTimesList = schedules.up.reversed()
+            .map { schedule in
+                Array(
+                    calculateTravelTimes(for: schedule)
+                        .reversed()
+                )
+            }
 
         let travelTimesList = await downTravelTimesList + upTravelTimesList
 

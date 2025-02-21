@@ -1,5 +1,7 @@
+import Foundation
+
 @propertyWrapper
-public struct Time: Sendable {
+public struct Time: Identifiable, Sendable {
 
     /// 時刻の構造 `(hour: Int, minute: Int)`
     public typealias TimeComponent = (hour: Int, minute: Int)
@@ -9,6 +11,9 @@ public struct Time: Sendable {
 
     /// 0時00分からの経過時間(分)
     public var minutesFromMidnight: Int?
+
+    /// 一意なID
+    public let id = UUID()
 
     /// 元の文字列形式の時刻
     private var rawTime: String?

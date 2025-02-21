@@ -4,6 +4,10 @@ public enum TravelTimeCalculator {
     static let oneDayInMinute = 1440
 
     /// すべての列車データをもとに、各駅間の走行時間(最小のもの)を計算する。
+    ///
+    /// - 各駅間の走行時間を得る都合上、通常は駅数より1少ない数の配列を得られる。
+    /// - 時刻データが足りず走行時間を計算できない場合、走行時間は1として扱われる。
+    /// - 通過も含め、一部区間を走行する列車がひとつもない場合、その区間の走行時間は結果に含まれない。
     public static func calculateTravelTimes(for timetables: [Timetable]) async -> [Int] {
         let schedules = extractSchedules(from: timetables)
 
@@ -28,17 +32,22 @@ public enum TravelTimeCalculator {
     /// - Parameter travelTimes: 各駅間の走行時間
     /// - Returns: 基点駅からの距離を表す配列
     ///
+    /// 走行時間が駅間のものである都合上、基点駅の距離`0`が始点に挿入される。
+    /// そのため、通常は`travelTimes`より要素数が1多い配列が返却される。
+    ///
     /// - 例:
-    /// [1, 2, 3, 4, 5] → [1, 3, 6, 10, 15]
+    /// [1, 2, 3, 4, 5] → [0, 1, 3, 6, 10, 15]
     public static func convertTravelTimesToDistanceFromBaseStation(
         travelTimes: [Int],
         direction: TrainDirection
     ) -> [Int] {
-        travelTimes
+        let sumResult = travelTimes
             .reversed(shouldReverse: direction == .up)
             .reduce(into: []) { result, num in
                 result.append((result.last ?? 0) + num)
             }
+
+        return [0] + sumResult // はじめの駅は基点駅からの距離が0
     }
 
     /// 単一の列車スケジュールから、各駅間の走行時間(分)を計算する。

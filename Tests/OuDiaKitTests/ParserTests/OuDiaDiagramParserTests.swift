@@ -73,11 +73,11 @@ struct OuDiaDiagramParserTests {
         #expect(downTrains.count == 2)
 
         #expect(downTrains[0].direction == .down)
-        #expect(downTrains[0].type == 1)
+        #expect(downTrains[0].typeIndex == 1)
         #expect(downTrains[0].number == "307")
 
         #expect(downTrains[1].direction == .down)
-        #expect(downTrains[1].type == 0)
+        #expect(downTrains[1].typeIndex == 0)
         #expect(downTrains[1].number == "1093")
     }
 

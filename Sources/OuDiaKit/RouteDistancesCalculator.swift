@@ -40,7 +40,7 @@ public enum RouteDistancesCalculator {
     /// - 例:
     /// [1, 2, 3, 4, 5] → [0, 1, 3, 6, 10, 15]
     public static func convertToDistancesFromBaseStation(
-        distances: [Int]
+        from distances: [Int]
     ) -> [Int] {
         let sumResult = distances
             .reduce(into: []) { result, num in

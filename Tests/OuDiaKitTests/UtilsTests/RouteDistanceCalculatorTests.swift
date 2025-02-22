@@ -1,13 +1,13 @@
 import Testing
 @testable import OuDiaKit
 
-struct TravelTimeCalculatorTests {
-    typealias TimetablesAndTravelTimesPair = (timetables: [Timetable], travelTimes: [Int])
-    typealias ScheduleAndTravelTimesPair = (schedule: Schedule, travelTimes: [Int])
-    typealias TravelTimesListAndTravelTimesPair = (travelTimesList: [[Int]], travelTimes: [Int])
+struct RouteDistanceCalculatorTests {
+    typealias TimetablesAndDistancesPair = (timetables: [Timetable], distances: [Int])
+    typealias ScheduleAndDistancesPair = (schedule: Schedule, distances: [Int])
+    typealias DistancesListAndDistancesPair = (distancesList: [[Int]], distances: [Int])
 
-    enum TravelTimeCalculatorTestData {
-        static let scheduleAndTravelTimesPairs: [ScheduleAndTravelTimesPair] = [
+    enum RouteDistanceCalculatorTestData {
+        static let scheduleAndDistancesPairs: [ScheduleAndDistancesPair] = [
             (
                 [],
                 []
@@ -69,7 +69,7 @@ struct TravelTimeCalculatorTests {
             )
         ]
 
-        static let travelTimesListAndTravelTimesPairs: [TravelTimesListAndTravelTimesPair] = [
+        static let distancesListAndDistancesPairs: [DistancesListAndDistancesPair] = [
             (
                 [
                     [1, 2, 3],
@@ -106,7 +106,7 @@ struct TravelTimeCalculatorTests {
             )
         ]
 
-        static let timetablesAndTravelTimesPairs: [TimetablesAndTravelTimesPair] = [
+        static let timetablesAndDistancesPairs: [TimetablesAndDistancesPair] = [
             (
                 TestData.mockOuDiaDiagram.route.timetables,
                 [2, 3]
@@ -116,32 +116,35 @@ struct TravelTimeCalculatorTests {
 
     @Test(
         "ダイヤから走行距離を正しく計算できる。",
-        arguments: TravelTimeCalculatorTestData.timetablesAndTravelTimesPairs
+        arguments: RouteDistanceCalculatorTestData.timetablesAndDistancesPairs
     )
-    func testCalculateTravelTimes(pair: TimetablesAndTravelTimesPair) async {
-        let calculated = await TravelTimeCalculator.calculateTravelTimes(for: pair.timetables)
+    func testCalculateDistances(pair: TimetablesAndDistancesPair) async {
+        let calculated = await RouteDistancesCalculator
+            .calculateDistancesBetweenStations(
+                for: pair.timetables
+            )
 
-        #expect(calculated == pair.travelTimes)
+        #expect(calculated == pair.distances)
     }
 
     @Test(
         "時刻データから走行距離を正しく計算できる。",
-        arguments: TravelTimeCalculatorTestData.scheduleAndTravelTimesPairs
+        arguments: RouteDistanceCalculatorTestData.scheduleAndDistancesPairs
     )
-    func testCalculateTravelTimes(pair: ScheduleAndTravelTimesPair) {
-        let calculated = TravelTimeCalculator.calculateTravelTimes(for: pair.schedule)
+    func testCalculateDistances(pair: ScheduleAndDistancesPair) {
+        let calculated = RouteDistancesCalculator.calculateDistances(for: pair.schedule)
 
-        #expect(calculated == pair.travelTimes)
+        #expect(calculated == pair.distances)
     }
 
     @Test(
         "複数の走行距離を正しく併合できる。",
-        arguments: TravelTimeCalculatorTestData.travelTimesListAndTravelTimesPairs
+        arguments: RouteDistanceCalculatorTestData.distancesListAndDistancesPairs
     )
-    func testMergeTravelTimesList(pair: TravelTimesListAndTravelTimesPair) {
-        let merged = TravelTimeCalculator
-            .mergeTravelTimesList(pair.travelTimesList)
+    func testMergeDistancesList(pair: DistancesListAndDistancesPair) {
+        let merged = RouteDistancesCalculator
+            .mergeDistancesList(pair.distancesList)
 
-        #expect(merged == pair.travelTimes)
+        #expect(merged == pair.distances)
     }
 }

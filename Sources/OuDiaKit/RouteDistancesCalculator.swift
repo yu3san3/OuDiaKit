@@ -29,7 +29,7 @@ public enum RouteDistancesCalculator {
         return mergeDistancesList(distancesList)
     }
 
-    /// 各駅間の距離を、基点駅からの距離へ変換する。
+    /// 各駅間の距離を基点駅からの距離へ変換する。
     ///
     /// - Parameter distances: 各駅間の走行距離を表す配列
     /// - Returns: 基点駅からの距離を表す配列
@@ -40,11 +40,9 @@ public enum RouteDistancesCalculator {
     /// - 例:
     /// [1, 2, 3, 4, 5] → [0, 1, 3, 6, 10, 15]
     public static func convertToDistancesFromBaseStation(
-        distances: [Int],
-        direction: TrainDirection
+        distances: [Int]
     ) -> [Int] {
         let sumResult = distances
-            .reversed(shouldReverse: direction == .up)
             .reduce(into: []) { result, num in
                 result.append((result.last ?? 0) + num)
             }

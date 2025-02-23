@@ -77,4 +77,16 @@ public enum DiagramLineStyle: String, Codable, Sendable {
     case dotted = "SenStyle_Tensen"
     /// ダイヤグラム線の種類 一点鎖線 Ittensasen
     case dashDot = "SenStyle_Ittensasen"
+
+    /// 線の描画パターン
+    ///
+    /// 描画する長さ、描画しない長さを順に配列で表現する。
+    var dash: [CGFloat] {
+        switch self {
+        case .solid: [] // -----
+        case .dashed: [5, 2] // - - - - -
+        case .dotted: [2, 2] // ･ ･ ･ ･ ･
+        case .dashDot: [5, 2, 2, 2] // - ･ - ･ -
+        }
+    }
 }

@@ -81,7 +81,7 @@ public enum DiagramLineStyle: String, Codable, Sendable {
     /// 線の描画パターン
     ///
     /// 描画する長さ、描画しない長さを順に配列で表現する。
-    var dash: [CGFloat] {
+    public var dash: [CGFloat] {
         switch self {
         case .solid: [] // -----
         case .dashed: [5, 2] // - - - - -

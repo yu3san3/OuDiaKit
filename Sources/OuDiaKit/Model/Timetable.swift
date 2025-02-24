@@ -38,6 +38,16 @@ extension Timetable: Codable {
     }
 }
 
+extension Timetable: Hashable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
 // MARK: - Kudari
 
 public struct Down: Equatable, Sendable { // インデント数: 3

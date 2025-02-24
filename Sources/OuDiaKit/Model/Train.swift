@@ -62,6 +62,16 @@ extension Train: Codable {
     }
 }
 
+extension Train: Hashable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
 // MARK: - Enum
 
 public enum TrainDirection: String, Codable, Sendable {

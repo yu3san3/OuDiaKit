@@ -2,7 +2,7 @@ import SwiftUICore
 @testable import OuDiaKit
 
 enum TestData {
-    typealias SchedulePair = (string: String, object: [ScheduleEntry])
+    typealias SchedulePair = (string: String, object: Schedule)
     typealias ScheduleEntryPair = (string: String, object: ScheduleEntry)
 
     static let mockOuDiaText = """
@@ -154,7 +154,7 @@ enum TestData {
                         trains: [
                             .init(
                                 direction: .down,
-                                type: 1,
+                                typeIndex: 1,
                                 number: "307",
                                 schedule: [
                                     .init(arrivalStatus: .stop, arrival: "", departure: "1009"),
@@ -164,7 +164,7 @@ enum TestData {
                             ),
                             .init(
                                 direction: .down,
-                                type: 0,
+                                typeIndex: 0,
                                 number: "1093",
                                 schedule: [
                                     .init(arrivalStatus: .stop, arrival: "", departure: "1011"),
@@ -182,7 +182,7 @@ enum TestData {
                         trains: [
                             .init(
                                 direction: .down,
-                                type: 1,
+                                typeIndex: 1,
                                 number: "101",
                                 schedule: [
                                     .init(arrivalStatus: .stop, arrival: "", departure: "1004"),
@@ -196,7 +196,7 @@ enum TestData {
                         trains: [
                             .init(
                                 direction: .up,
-                                type: 0,
+                                typeIndex: 0,
                                 number: "100",
                                 schedule: [
                                     .init(arrivalStatus: .stop, arrival: "", departure: "1003"),

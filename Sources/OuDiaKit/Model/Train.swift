@@ -5,7 +5,7 @@ public struct Train: Identifiable, Equatable, Sendable { // インデント数: 
     /// 方向 Houkou
     public var direction: TrainDirection
     /// 種別 Syubetsu
-    public var type: Int
+    public var typeIndex: Int
     /// 列車番号 Ressyabangou
     public var number: String?
     /// 列車名 Ressyamei
@@ -13,23 +13,23 @@ public struct Train: Identifiable, Equatable, Sendable { // インデント数: 
     /// 号数 Gousuu
     public var suffixNumber: String?
     /// 駅時刻 EkiJikoku
-    public var schedule: [ScheduleEntry]
+    public var schedule: Schedule
     /// 備考 Bikou
     public var remark: String?
 
     public init(
         id: UUID = UUID(),
         direction: TrainDirection,
-        type: Int,
+        typeIndex: Int,
         number: String? = nil,
         name: String? = nil,
         suffixNumber: String? = nil,
-        schedule: [ScheduleEntry],
+        schedule: Schedule,
         remark: String? = nil
     ) {
         self.id = id
         self.direction = direction
-        self.type = type
+        self.typeIndex = typeIndex
         self.number = number
         self.name = name
         self.suffixNumber = suffixNumber
@@ -41,7 +41,7 @@ public struct Train: Identifiable, Equatable, Sendable { // インデント数: 
 extension Train: Codable {
     enum CodingKeys: String, CodingKey {
         case direction = "Houkou"
-        case type = "Syubetsu"
+        case typeIndex = "Syubetsu"
         case number = "Ressyabangou"
         case name = "Ressyamei"
         case suffixNumber = "Gousuu"
@@ -53,12 +53,22 @@ extension Train: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = UUID()
         self.direction = try container.decode(TrainDirection.self, forKey: .direction)
-        self.type = try container.decodeIntFromString(forKey: .type)
+        self.typeIndex = try container.decodeIntFromString(forKey: .typeIndex)
         self.number = try container.decodeIfPresent(String.self, forKey: .number)
         self.name = try container.decodeIfPresent(String.self, forKey: .name)
         self.suffixNumber = try container.decodeIfPresent(String.self, forKey: .suffixNumber)
         self.schedule = try container.decodeScheduleFromString(forKey: .schedule)
         self.remark = try container.decodeIfPresent(String.self, forKey: .remark)
+    }
+}
+
+extension Train: Hashable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 

@@ -126,7 +126,7 @@ public final class OuDiaDiagramStringifier {
         [
             "Ressya.",
             "Houkou=\(train.direction.rawValue)",
-            "Syubetsu=\(train.type)",
+            "Syubetsu=\(train.typeIndex)",
             train.number.map { "Ressyabangou=\($0)" },
             train.name.map { "Ressyamei=\($0)" },
             train.suffixNumber.map { "Gousuu=\($0)" },

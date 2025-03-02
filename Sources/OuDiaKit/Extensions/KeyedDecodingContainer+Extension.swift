@@ -23,7 +23,7 @@ extension KeyedDecodingContainer {
         return stringValue == "1" ? true : false
     }
 
-    func decodeScheduleFromString(forKey key: KeyedDecodingContainer.Key) throws -> [ScheduleEntry] {
+    func decodeScheduleFromString(forKey key: KeyedDecodingContainer.Key) throws -> Schedule {
         let stringValue = try decode(String.self, forKey: key)
 
         return ScheduleParser().parse(stringValue)

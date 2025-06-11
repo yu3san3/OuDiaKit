@@ -1,4 +1,4 @@
-import SwiftUICore
+import SwiftUI
 @testable import OuDiaKit
 
 enum TestData {

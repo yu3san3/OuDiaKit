@@ -1,4 +1,4 @@
-import SwiftUICore
+import SwiftUI
 
 public struct TrainType: Equatable, Sendable { // インデント数: 2
     /// 種別名 Syubetsumei

@@ -1,4 +1,4 @@
-import SwiftUICore
+import SwiftUI
 
 extension KeyedDecodingContainer {
     func decodeIntFromString(forKey key: KeyedDecodingContainer.Key) throws -> Int {

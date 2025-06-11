@@ -1,4 +1,4 @@
-import SwiftUICore
+import SwiftUI
 
 public struct DisplayProperty: Equatable, Codable, Sendable { // インデント数: 1
     /// 時刻表フォント JikokuhyouFont
